@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Play1-chart by sant0s</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Play1-chart</h1>
+        <h2>Play 1 chart module</h2>
+        <a href="https://github.com/sant0s/play1-chart" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="chart" class="anchor" href="#chart" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chart</h1>
+
+<p>The Chart module allows for easy generation of chart images. The
+following chart types are supported:</p>
+
+<ul>
+<li>  Bar</li>
+<li>  Line</li>
+<li>  Pie</li>
+<li>  Ring</li>
+</ul>
+
+<p>The format of the images is PNG.</p>
+
+<p>This module makes use of the JFreeChart library.</p>
+
+<h2>
+<a id="sample-application" class="anchor" href="#sample-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample application</h2>
+
+<p>A sample application can found in the <code>samples-and-tests</code> directory. It
+provides documentation and examples of all supported charts.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>For HTML views, an image can be represented as an <code>img</code> tag where its
+<code>src</code> attribute is:</p>
+
+<ol>
+<li>
+<p>A Base64-encoded image:</p>
+
+<ul>
+<li>  <code>&lt;img src="data:image/png;base64,&lt;base64&gt; &lt;attrs&gt; /&gt;</code>
+
+<ul>
+<li>  <code>&lt;base64&gt;</code> is a Base64-encoded image</li>
+<li>  <code>&lt;attrs&gt;</code> is a list of <code>img</code> attributes besides <code>src</code>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>An image URL:</p>
+
+<ul>
+<li>  <code>&lt;img src="&lt;url&gt;" &lt;attrs&gt; /&gt;</code>
+
+<ul>
+<li>  <code>&lt;url&gt;</code> is the URL of an image</li>
+<li>  <code>&lt;attrs&gt;</code> is a list of <code>img</code> attributes besides <code>src</code>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+<p>The Chart module supports both of the above scenarios. A chart image can
+be generated in its Base64-encoded form or as is. These scenarios are
+described in the following sections.</p>
+
+<h3>
+<a id="chart-as-img-with-src-set-to-a-base64-encoded-image" class="anchor" href="#chart-as-img-with-src-set-to-a-base64-encoded-image" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chart as <code>img</code> with <code>src</code> set to a Base64-encoded image</h3>
+
+<p>In this scenario, a controller creates (or obtains) a <code>Chart</code> instance
+and passes it to a view. The view then renders it through a fast tag.</p>
+
+<h4>
+<a id="creating-a-chart-instance-in-the-controller" class="anchor" href="#creating-a-chart-instance-in-the-controller" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a <code>Chart</code> instance in the controller</h4>
+
+<p>A <code>Chart</code> can be created using the following idiom (example for a pie
+chart):</p>
+
+<pre><code>Map&lt;Comparable, Number&gt; dataset = ...;
+PieChartBuilder builder = ChartBuilderFactory.newPieChartBuilder(dataset);
+builder.title("Pie").legend(true).width(700).height(500);
+Chart pieChart = builder.build();
+render(pieChart);
+</code></pre>
+
+<p>The steps are:</p>
+
+<ol>
+<li> Initialise a dataset that is suitable to the chart. Different chart
+types require different dataset types. In this case, a pie chart
+requires a map of keys and values which will be rendered as its
+slices.</li>
+<li> Get a builder for a specific type of chart.</li>
+<li> Optionally, configure the builder. In this case, one’s setting the
+chart title, informing that the legend should be displayed, and
+setting the width and height of the chart image.</li>
+<li> Build the chart according to the previously set dataset and optional
+settings.</li>
+<li> Pass the chart to the view.</li>
+</ol>
+
+<h4>
+<a id="rendering-the-chart-instance-in-the-view" class="anchor" href="#rendering-the-chart-instance-in-the-view" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rendering the <code>Chart</code> instance in the view</h4>
+
+<p>A <code>Chart</code> can be rendered in a view through the following fast tag:</p>
+
+<pre><code>#{chart.img chart: pieChart /}
+</code></pre>
+
+<p>This fast tag will create the chart image and generate an <code>img</code> tag with
+the following attributes:</p>
+
+<ul>
+<li>  <code>src</code> set to the Base64-encoded representation of the chart image</li>
+<li>  <code>width</code> set to the width of the chart image (*)</li>
+<li>  <code>height</code> set to the height of the chart image (*)</li>
+</ul>
+
+<p>(*) These attributes provide rendering hints to the user agent.</p>
+
+<p>Any other attribute passed to this tag is copied verbatim to the HTML
+<code>img</code> tag. For example,</p>
+
+<pre><code>#{chart.img chart: pieChart, title: "The pie" /}
+</code></pre>
+
+<p>will generate an <code>img</code> tag similar to the previous one but having the
+<code>title</code> attribute set.</p>
+
+<h3>
+<a id="chart-as-img-with-src-set-to-an-image-url" class="anchor" href="#chart-as-img-with-src-set-to-an-image-url" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chart as <code>img</code> with <code>src</code> set to an image URL</h3>
+
+<p>In this scenario, a controller creates (or obtains) a <code>Chart</code> instance,
+creates its corresponding image and returns it as it is i.e. as PNG
+bytes, once PNG is the format of chart images.</p>
+
+<h4>
+<a id="creating-a-chart-instance-in-the-controller-1" class="anchor" href="#creating-a-chart-instance-in-the-controller-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a <code>Chart</code> instance in the controller</h4>
+
+<p>The steps are similar to the previous scenario, except for the render
+part:</p>
+
+<pre><code>import static play.modules.chart.ChartResult.renderChart;
+Map&lt;Comparable, Number&gt; dataset = ...;
+PieChartBuilder builder = ChartBuilderFactory.newPieChartBuilder(dataset);
+builder.title("Pie").legend(true).width(700).height(500);
+Chart pieChart = builder.build();
+renderChart(pieChart);
+</code></pre>
+
+<p>In this case, the statically imported <code>renderChart</code> method will create
+the chart image and return it as it is i.e. as PNG bytes.</p>
+
+<h4>
+<a id="rendering-the-chart-instance-in-the-view-1" class="anchor" href="#rendering-the-chart-instance-in-the-view-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rendering the <code>Chart</code> instance in the view</h4>
+
+<p>Assuming <code>chart()</code> as the action method calling <code>renderChart</code> above, the
+view could render the chart image using:</p>
+
+<pre><code>&lt;img src="{@chart()}" /&gt;
+</code></pre>
+
+<h2>
+<a id="additional-information" class="anchor" href="#additional-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional information</h2>
+
+<p>The examples above illustrate the idiom used for obtaining a <code>Chart</code>
+instance and rendering its image using Base64-encoded and as is forms.</p>
+
+<p><code>ChartBuilderFactory</code> is the entry point for chart creation. This
+factory provides methods for obtaining builders of all supported charts.</p>
+
+<p>Once a builder is obtained, different settings can be configured via its
+API.</p>
+
+<p>Additional information on all supported chart types and builder
+configuration options can be found in the sample application.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/sant0s/play1-chart/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/sant0s/play1-chart/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/sant0s/play1-chart"></a> is maintained by <a href="https://github.com/sant0s">sant0s</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
