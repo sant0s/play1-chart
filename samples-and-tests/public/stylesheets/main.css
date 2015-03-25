@@ -1,0 +1,6 @@
+html, body { font-family: 'Lucida Grande', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 2em; }
+
+.charts div { padding-bottom: 40px; }
+.charts div:last-child { padding-bottom: 0px; }
+
+.usage { padding: 10px; font-family: monospace; border-style: solid; border-width: 1px; font-size: 20px; }

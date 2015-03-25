@@ -1,0 +1,4 @@
+# Application dependencies
+
+require:
+    - play -> chart 0.1
