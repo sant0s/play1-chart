@@ -46,13 +46,31 @@ following chart types are supported:</p>
 <p>This module makes use of the JFreeChart library.</p>
 
 <h2>
-<a id="sample-application" class="anchor" href="#sample-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample application</h2>
+<a id="quick-example" class="anchor" href="#quick-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick example</h2>
 
-<p>A sample application can found in the <code>samples-and-tests</code> directory. It
-provides documentation and examples of all supported charts.</p>
+<h3>
+<a id="controller" class="anchor" href="#controller" aria-hidden="true"><span class="octicon octicon-link"></span></a>Controller</h3>
+
+<pre><code>Map&lt;Comparable, Number&gt; dataset = ArrayUtils.toMap(new Object[][] {
+        {"Slice 1", 51}, {"Slice 2", 49}});
+Chart pieChart = ChartBuilderFactory.newPieChartBuilder(dataset).build();
+render(pieChart);
+</code></pre>
+
+<h3>
+<a id="view" class="anchor" href="#view" aria-hidden="true"><span class="octicon octicon-link"></span></a>View</h3>
+
+<pre><code>#{chart.img chart: pieChart /}
+</code></pre>
 
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="sample-application" class="anchor" href="#sample-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample application</h2>
+
+<p>A sample application can be found in the <code>samples-and-tests</code> directory.
+It provides documentation and examples of all supported charts.</p>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
 <p>For HTML views, an image can be represented as an <code>img</code> tag where its
 <code>src</code> attribute is:</p>
@@ -89,8 +107,11 @@ provides documentation and examples of all supported charts.</p>
 </ol>
 
 <p>The Chart module supports both of the above scenarios. A chart image can
-be generated in its Base64-encoded form or as is. These scenarios are
-described in the following sections.</p>
+be generated in both its Base64-encoded and raw forms. These scenarios
+are described in the following section.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <h3>
 <a id="chart-as-img-with-src-set-to-a-base64-encoded-image" class="anchor" href="#chart-as-img-with-src-set-to-a-base64-encoded-image" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chart as <code>img</code> with <code>src</code> set to a Base64-encoded image</h3>
@@ -104,7 +125,10 @@ and passes it to a view. The view then renders it through a fast tag.</p>
 <p>A <code>Chart</code> can be created using the following idiom (example for a pie
 chart):</p>
 
-<pre><code>Map&lt;Comparable, Number&gt; dataset = ...;
+<pre><code>Map&lt;Comparable, Number&gt; dataset = ArrayUtils.toMap(new Object[][] {
+        {"Asia", 29.5D}, {"Africa", 20.4D}, {"North America", 16.5D},
+        {"South America", 12D}, {"Antarctica", 9.2D}, {"Europe", 6.8D},
+        {"Australia", 5.9D}});
 PieChartBuilder builder = ChartBuilderFactory.newPieChartBuilder(dataset);
 builder.title("Pie").legend(true).width(700).height(500);
 Chart pieChart = builder.build();
@@ -140,13 +164,13 @@ the following attributes:</p>
 
 <ul>
 <li>  <code>src</code> set to the Base64-encoded representation of the chart image</li>
-<li>  <code>width</code> set to the width of the chart image (*)</li>
-<li>  <code>height</code> set to the height of the chart image (*)</li>
+<li>  <code>width</code> set to the width of the chart image (*<em>)\
+*</em> <code>height</code> set to the height of the chart image (*)</li>
 </ul>
 
 <p>(*) These attributes provide rendering hints to the user agent.</p>
 
-<p>Any other attribute passed to this tag is copied verbatim to the HTML
+<p>Any other attributes passed to this tag are copied verbatim to the HTML
 <code>img</code> tag. For example,</p>
 
 <pre><code>#{chart.img chart: pieChart, title: "The pie" /}
@@ -159,8 +183,8 @@ the following attributes:</p>
 <a id="chart-as-img-with-src-set-to-an-image-url" class="anchor" href="#chart-as-img-with-src-set-to-an-image-url" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chart as <code>img</code> with <code>src</code> set to an image URL</h3>
 
 <p>In this scenario, a controller creates (or obtains) a <code>Chart</code> instance,
-creates its corresponding image and returns it as it is i.e. as PNG
-bytes, once PNG is the format of chart images.</p>
+creates its corresponding image and returns it in its raw form i.e. as
+PNG bytes, once PNG is the format of chart images.</p>
 
 <h4>
 <a id="creating-a-chart-instance-in-the-controller-1" class="anchor" href="#creating-a-chart-instance-in-the-controller-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a <code>Chart</code> instance in the controller</h4>
@@ -169,7 +193,10 @@ bytes, once PNG is the format of chart images.</p>
 part:</p>
 
 <pre><code>import static play.modules.chart.ChartResult.renderChart;
-Map&lt;Comparable, Number&gt; dataset = ...;
+Map&lt;Comparable, Number&gt; dataset = ArrayUtils.toMap(new Object[][] {
+        {"Asia", 29.5D}, {"Africa", 20.4D}, {"North America", 16.5D},
+        {"South America", 12D}, {"Antarctica", 9.2D}, {"Europe", 6.8D},
+        {"Australia", 5.9D}});
 PieChartBuilder builder = ChartBuilderFactory.newPieChartBuilder(dataset);
 builder.title("Pie").legend(true).width(700).height(500);
 Chart pieChart = builder.build();
@@ -177,7 +204,7 @@ renderChart(pieChart);
 </code></pre>
 
 <p>In this case, the statically imported <code>renderChart</code> method will create
-the chart image and return it as it is i.e. as PNG bytes.</p>
+the chart image and return it in its raw form i.e. as PNG bytes.</p>
 
 <h4>
 <a id="rendering-the-chart-instance-in-the-view-1" class="anchor" href="#rendering-the-chart-instance-in-the-view-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rendering the <code>Chart</code> instance in the view</h4>
@@ -192,7 +219,7 @@ view could render the chart image using:</p>
 <a id="additional-information" class="anchor" href="#additional-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional information</h2>
 
 <p>The examples above illustrate the idiom used for obtaining a <code>Chart</code>
-instance and rendering its image using Base64-encoded and as is forms.</p>
+instance and rendering its image using Base64-encoded and raw forms.</p>
 
 <p><code>ChartBuilderFactory</code> is the entry point for chart creation. This
 factory provides methods for obtaining builders of all supported charts.</p>
