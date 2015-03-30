@@ -31,10 +31,10 @@ public interface Chart {
     public String asBase64();
 
     /**
-     * Get the chart image as it is.
+     * Get the raw representation of the chart image.
      * 
-     * @return Chart image as it is
+     * @return Chart raw image
      */
-    public byte[] asIs();
+    public byte[] asRaw();
 
 }

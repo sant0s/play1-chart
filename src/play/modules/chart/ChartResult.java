@@ -35,7 +35,7 @@ public class ChartResult extends Result {
     @Override
     public void apply(Request request, Response response) {
 
-	byte[] chart = this.chart.asIs();
+	byte[] chart = this.chart.asRaw();
 	this.setContentTypeIfNotSet(response, AbstractChart.DEFAULT_IMAGE_CONTENT_TYPE);
 	try {
 	    response.out.write(chart);

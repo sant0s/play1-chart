@@ -11,11 +11,24 @@ The format of the images is PNG.
 
 This module makes use of the JFreeChart library.
 
+h2. Quick example
+
+h3. Controller
+
+bc. Map<Comparable, Number> dataset = ArrayUtils.toMap(new Object[][] {
+		{"Slice 1", 51}, {"Slice 2", 49}});
+Chart pieChart = ChartBuilderFactory.newPieChartBuilder(dataset).build();
+render(pieChart);
+
+h3. View
+
+bc. #{chart.img chart: pieChart /}
+
 h2. Sample application
 
-A sample application can found in the @samples-and-tests@ directory. It provides documentation and examples of all supported charts.
+A sample application can be found in the @samples-and-tests@ directory. It provides documentation and examples of all supported charts.
 
-h2. Usage
+h2. Introduction
 
 For HTML views, an image can be represented as an @img@ tag where its @src@ attribute is:
 
@@ -28,7 +41,9 @@ For HTML views, an image can be represented as an @img@ tag where its @src@ attr
 *** @<url>@ is the URL of an image
 *** @<attrs>@ is a list of @img@ attributes besides @src@
 
-The Chart module supports both of the above scenarios. A chart image can be generated in its Base64-encoded form or as is. These scenarios are described in the following sections.
+The Chart module supports both of the above scenarios. A chart image can be generated in both its Base64-encoded and raw forms. These scenarios are described in the following section.
+
+h2. Usage
 
 h3. Chart as @img@ with @src@ set to a Base64-encoded image
 
@@ -38,7 +53,10 @@ h4. Creating a @Chart@ instance in the controller
 
 A @Chart@ can be created using the following idiom (example for a pie chart):
 
-bc. Map<Comparable, Number> dataset = ...;
+bc. Map<Comparable, Number> dataset = ArrayUtils.toMap(new Object[][] {
+		{"Asia", 29.5D}, {"Africa", 20.4D}, {"North America", 16.5D},
+		{"South America", 12D}, {"Antarctica", 9.2D}, {"Europe", 6.8D},
+		{"Australia", 5.9D}});
 PieChartBuilder builder = ChartBuilderFactory.newPieChartBuilder(dataset);
 builder.title("Pie").legend(true).width(700).height(500);
 Chart pieChart = builder.build();
@@ -61,12 +79,12 @@ bc. #{chart.img chart: pieChart /}
 This fast tag will create the chart image and generate an @img@ tag with the following attributes:
 
 * @src@ set to the Base64-encoded representation of the chart image
-* @width@ set to the width of the chart image [1]
-* @height@ set to the height of the chart image [1]
+* @width@ set to the width of the chart image (*)
+* @height@ set to the height of the chart image (*)
 
-fn1. These attributes provide rendering hints to the user agent.
+(*) These attributes provide rendering hints to the user agent.
 
-Any other attribute passed to this tag is copied verbatim to the HTML @img@ tag. For example,
+Any other attributes passed to this tag are copied verbatim to the HTML @img@ tag. For example,
 
 bc. #{chart.img chart: pieChart, title: "The pie" /}
 
@@ -74,20 +92,23 @@ will generate an @img@ tag similar to the previous one but having the @title@ at
 
 h3. Chart as @img@ with @src@ set to an image URL
 
-In this scenario, a controller creates (or obtains) a @Chart@ instance, creates its corresponding image and returns it as it is i.e. as PNG bytes, once PNG is the format of chart images.
+In this scenario, a controller creates (or obtains) a @Chart@ instance, creates its corresponding image and returns it in its raw form i.e. as PNG bytes, once PNG is the format of chart images.
 
 h4. Creating a @Chart@ instance in the controller
 
 The steps are similar to the previous scenario, except for the render part:
 
 bc. import static play.modules.chart.ChartResult.renderChart;
-Map<Comparable, Number> dataset = ...;
+Map<Comparable, Number> dataset = ArrayUtils.toMap(new Object[][] {
+		{"Asia", 29.5D}, {"Africa", 20.4D}, {"North America", 16.5D},
+		{"South America", 12D}, {"Antarctica", 9.2D}, {"Europe", 6.8D},
+		{"Australia", 5.9D}});
 PieChartBuilder builder = ChartBuilderFactory.newPieChartBuilder(dataset);
 builder.title("Pie").legend(true).width(700).height(500);
 Chart pieChart = builder.build();
 renderChart(pieChart);
 
-In this case, the statically imported @renderChart@ method will create the chart image and return it as it is i.e. as PNG bytes.
+In this case, the statically imported @renderChart@ method will create the chart image and return it in its raw form i.e. as PNG bytes.
 
 h4. Rendering the @Chart@ instance in the view
 
@@ -97,7 +118,7 @@ bc. <img src="{@chart()}" />
 
 h2. Additional information
 
-The examples above illustrate the idiom used for obtaining a @Chart@ instance and rendering its image using Base64-encoded and as is forms.
+The examples above illustrate the idiom used for obtaining a @Chart@ instance and rendering its image using Base64-encoded and raw forms.
 
 @ChartBuilderFactory@ is the entry point for chart creation. This factory provides methods for obtaining builders of all supported charts.
 

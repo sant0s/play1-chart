@@ -16,20 +16,48 @@ import play.modules.chart.PieChartBuilder;
 import play.modules.chart.RingChartBuilder;
 import play.mvc.Controller;
 
+/**
+ * Chart module demo application.
+ * 
+ * @author Jose Santos
+ * @version 0.1
+ * @since 0.1
+ */
 public class Application extends Controller {
+
+    /**
+     * Series (recipes) and categories (ingredients) dataset.
+     */
+    private static final Map<Comparable, Map<Comparable, Number>> SERIES_CATEGORIES_VALUES;
+
+    /**
+     * Keys (continents) and values (area) dataset.
+     */
+    private static final Map<Comparable, Number> KEYS_VALUES = ArrayUtils.toMap(new Object[][] { {"Asia", 29.5D},
+	    {"Africa", 20.4D}, {"North America", 16.5D}, {"South America", 12D}, {"Antarctica", 9.2D},
+	    {"Europe", 6.8D}, {"Australia", 5.9D}});
+
+    static {
+	Map<Comparable, Number> applePie = ArrayUtils.toMap(new Object[][] { {"Allspice", 0}, {"Apple", 70},
+		{"Cinnamon", 5}, {"Flour", 15}, {"Pumpkin", 0}, {"Sugar", 10}});
+	Map<Comparable, Number> pumpkinPie = ArrayUtils.toMap(new Object[][] { {"Allspice", 5}, {"Apple", 0},
+		{"Cinnamon", 0}, {"Flour", 15}, {"Pumpkin", 65}, {"Sugar", 15}});
+	SERIES_CATEGORIES_VALUES = new LinkedHashMap();
+	SERIES_CATEGORIES_VALUES.put("Apple Pie", applePie);
+	SERIES_CATEGORIES_VALUES.put("Pumpkin Pie", pumpkinPie);
+
+    }
 
     public static void index() {
 
 	// BAR CHARTS
 
 	// bar chart with a dataset of series of categories and values
-	BarChartBuilder barChart1Builder = ChartBuilderFactory
-		.newBarChartBuilder(DataSetSamples.SERIES_CATEGORIES_VALUES);
+	BarChartBuilder barChart1Builder = ChartBuilderFactory.newBarChartBuilder(SERIES_CATEGORIES_VALUES);
 	Chart barChart1 = barChart1Builder.build();
 
 	// same dataset as previous one but customised
-	BarChartBuilder barChart2Builder = ChartBuilderFactory
-		.newBarChartBuilder(DataSetSamples.SERIES_CATEGORIES_VALUES);
+	BarChartBuilder barChart2Builder = ChartBuilderFactory.newBarChartBuilder(SERIES_CATEGORIES_VALUES);
 	barChart2Builder.title("Chart 2").titleFontSize(20).legend(true).width(700).height(500).xLabel("Ingredients")
 		.yLabel("Quantity").orientation(ChartOrientation.HORIZONTAL);
 	Chart barChart2 = barChart2Builder.build();
@@ -37,13 +65,11 @@ public class Application extends Controller {
 	// LINE CHARTS
 
 	// line chart with a dataset of series of categories and values
-	LineChartBuilder lineChart1Builder = ChartBuilderFactory
-		.newLineChartBuilder(DataSetSamples.SERIES_CATEGORIES_VALUES);
+	LineChartBuilder lineChart1Builder = ChartBuilderFactory.newLineChartBuilder(SERIES_CATEGORIES_VALUES);
 	Chart lineChart1 = lineChart1Builder.build();
 
 	// same dataset as previous one but customised
-	LineChartBuilder lineChart2Builder = ChartBuilderFactory
-		.newLineChartBuilder(DataSetSamples.SERIES_CATEGORIES_VALUES);
+	LineChartBuilder lineChart2Builder = ChartBuilderFactory.newLineChartBuilder(SERIES_CATEGORIES_VALUES);
 	lineChart2Builder.title("Chart 2").titleFontSize(20).legend(true).width(700).height(500).xLabel("Ingredients")
 		.yLabel("Quantity").orientation(ChartOrientation.HORIZONTAL);
 	Chart lineChart2 = lineChart2Builder.build();
@@ -51,22 +77,22 @@ public class Application extends Controller {
 	// PIE CHARTS
 
 	// dataset of categories and values
-	PieChartBuilder pieChart1Builder = ChartBuilderFactory.newPieChartBuilder(DataSetSamples.KEYS_VALUES);
+	PieChartBuilder pieChart1Builder = ChartBuilderFactory.newPieChartBuilder(KEYS_VALUES);
 	Chart pieChart1 = pieChart1Builder.build();
 
 	// same as previous one but customised
-	PieChartBuilder pieChart2Builder = ChartBuilderFactory.newPieChartBuilder(DataSetSamples.KEYS_VALUES);
+	PieChartBuilder pieChart2Builder = ChartBuilderFactory.newPieChartBuilder(KEYS_VALUES);
 	pieChart2Builder.title("Pie 2").titleFontSize(20).legend(true).width(700).height(500);
 	Chart pieChart2 = pieChart2Builder.build();
 
 	// RING CHARTS
 
 	// dataset of categories and values
-	RingChartBuilder ringChart1Builder = ChartBuilderFactory.newRingChartBuilder(DataSetSamples.KEYS_VALUES);
+	RingChartBuilder ringChart1Builder = ChartBuilderFactory.newRingChartBuilder(KEYS_VALUES);
 	Chart ringChart1 = ringChart1Builder.build();
 
 	// same as previous one but customised
-	RingChartBuilder ringChart2Builder = ChartBuilderFactory.newRingChartBuilder(DataSetSamples.KEYS_VALUES);
+	RingChartBuilder ringChart2Builder = ChartBuilderFactory.newRingChartBuilder(KEYS_VALUES);
 	ringChart2Builder.title("Ring 2").titleFontSize(20).legend(true).width(700).height(500);
 	Chart ringChart2 = ringChart2Builder.build();
 
@@ -77,37 +103,10 @@ public class Application extends Controller {
     public static void chart() {
 
 	// bar chart with a dataset of series of categories and values
-	BarChartBuilder builder = ChartBuilderFactory.newBarChartBuilder(DataSetSamples.SERIES_CATEGORIES_VALUES);
+	BarChartBuilder builder = ChartBuilderFactory.newBarChartBuilder(SERIES_CATEGORIES_VALUES);
 	Chart chart = builder.build();
 
 	renderChart(chart);
-
-    }
-
-    private static class DataSetSamples {
-
-	/**
-	 * Series (recipes) and categories (ingredients) dataset.
-	 */
-	private static final Map<Comparable, Map<Comparable, Number>> SERIES_CATEGORIES_VALUES;
-
-	/**
-	 * Keys (continents) and values (area) dataset.
-	 */
-	private static final Map<Comparable, Number> KEYS_VALUES;
-
-	static {
-	    Map<Comparable, Number> applePie = ArrayUtils.toMap(new Object[][]{{"All spice", 0}, {"Apple", 70},
-		    {"Cinnamon", 5}, {"Flour", 15}, {"Pumpkin", 0}, {"Sugar", 10}});
-	    Map<Comparable, Number> pumpkinPie = ArrayUtils.toMap(new Object[][]{{"All spice", 5}, {"Apple", 0},
-		    {"Cinnamon", 0}, {"Flour", 15}, {"Pumpkin", 65}, {"Sugar", 15}});
-	    SERIES_CATEGORIES_VALUES = new LinkedHashMap();
-	    SERIES_CATEGORIES_VALUES.put("Apple Pie", applePie);
-	    SERIES_CATEGORIES_VALUES.put("Pumpkin Pie", pumpkinPie);
-
-	    KEYS_VALUES = ArrayUtils.toMap(new Object[][]{{"Asia", 29.5D}, {"Africa", 20.4D}, {"North America", 16.5D},
-		    {"South America", 12D}, {"Antarctica", 9.2D}, {"Europe", 6.8D}, {"Australia", 5.9D}});
-	}
 
     }
 

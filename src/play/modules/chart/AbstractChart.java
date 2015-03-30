@@ -76,20 +76,20 @@ abstract class AbstractChart implements Chart {
     }
 
     @Override
-    public byte[] asIs() {
+    public byte[] asRaw() {
 
-	byte[] chartAsIs = null;
+	byte[] rawChart = null;
 
 	JFreeChart chart = this.buildChart();
 	RenderedImage image = chart.createBufferedImage(this.width, this.height);
 	try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 	    ImageIO.write(image, DEFAULT_IMAGE_FORMAT, baos);
-	    chartAsIs = baos.toByteArray();
+	    rawChart = baos.toByteArray();
 	} catch (IOException e) {
 	    throw new UnexpectedException(e);
 	}
 
-	return chartAsIs;
+	return rawChart;
 
     }
 
