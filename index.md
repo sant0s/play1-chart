@@ -1,15 +1,15 @@
 Chart
 =====
 
-The Chart module allows for easy generation of chart images. The
-following chart types are supported:
+The Chart module allows easy generation of chart images. The following
+chart types are supported:
 
 -   Bar
 -   Line
 -   Pie
 -   Ring
 
-The format of the images is PNG.
+The image format is PNG.
 
 This module makes use of the JFreeChart library.
 
@@ -37,21 +37,19 @@ Introduction
 ------------
 
 For HTML views, an image can be represented as an `img` tag where its
-`src` attribute is:
+`src` attribute is either:
 
 1.  A Base64-encoded image:
     -   `<img src="data:image/png;base64,<base64> <attrs> />`
         -   `<base64>` is a Base64-encoded image
-        -   `<attrs>` is a list of `img` attributes besides `src`
-
+        -   `<attrs>` is a list of additional attributes
 2.  An image URL:
     -   `<img src="<url>" <attrs> />`
         -   `<url>` is the URL of an image
         -   `<attrs>` is a list of `img` attributes besides `src`
 
-The Chart module supports both of the above scenarios. A chart image can
-be generated in both its Base64-encoded and raw forms. These scenarios
-are described in the following section.
+The Chart module supports both scenarios i.e. chart images can be
+generated in either Base64-encoded or raw forms.
 
 Usage
 -----
@@ -59,7 +57,7 @@ Usage
 ### Chart as `img` with `src` set to a Base64-encoded image
 
 In this scenario, a controller creates (or obtains) a `Chart` instance
-and passes it to a view. The view then renders it through a fast tag.
+and passes it to a view which renders it through a fast tag.
 
 #### Creating a `Chart` instance in the controller
 
@@ -77,46 +75,43 @@ chart):
 
 The steps are:
 
-1.  Initialise a dataset that is suitable to the chart. Different chart
-    types require different dataset types. In this case, a pie chart
-    requires a map of keys and values which will be rendered as its
-    slices.
-2.  Get a builder for a specific type of chart.
-3.  Optionally, configure the builder. In this case, one’s setting the
-    chart title, informing that the legend should be displayed, and
-    setting the width and height of the chart image.
-4.  Build the chart according to the previously set dataset and optional
-    settings.
+1.  Initialise the chart dataset. Different chart types require
+    different dataset types. In this example, the pie chart requires a
+    map of key-value pairs, each to be rendered as its slices.
+2.  Get a builder for the chart type.
+3.  Optionally, configure the builder. In this example, the chart title,
+    legend visibility and image dimensions are set.
+4.  Build the chart.
 5.  Pass the chart to the view.
 
 #### Rendering the `Chart` instance in the view
 
-A `Chart` can be rendered in a view through the following fast tag:
+A `Chart` can be rendered in a view via:
 
     #{chart.img chart: pieChart /}
 
-This fast tag will create the chart image and generate an `img` tag with
-the following attributes:
+The `chart.img` fast tag generates the chart image and generates an
+`img` tag with the following attributes:
 
 -   `src` set to the Base64-encoded representation of the chart image
--   `width` set to the width of the chart image (\*)
--   `height` set to the height width of the chart image (\*)
+-   `width` set to the chart image width
+-   `height` set to the chart image height
 
-(\*) These attributes provide rendering hints to the user agent.
+Attributes `width` and `height` provide rendering hints to the user
+agent.
 
-Any other attributes passed to this tag are copied verbatim to the HTML
-`img` tag. For example,
+Additional attributes may be supplied via:
 
     #{chart.img chart: pieChart, title: "The pie" /}
 
-will generate an `img` tag similar to the previous one but having the
-`title` attribute set.
+These attributes are copied verbatim to the HTML `img` tag. In this
+example,\
+`img` will include attributes `src`, `width`, `height` and `title`.
 
-### Chart as `img` with `src` set to an image URL
+### Chart as `img` with `src` set to a URL
 
 In this scenario, a controller creates (or obtains) a `Chart` instance,
-creates its corresponding image and returns it in its raw form i.e. as
-PNG bytes, once PNG is the format of chart images.
+generates its image and returns it in its raw form i.e. as PNG bytes.
 
 #### Creating a `Chart` instance in the controller
 
@@ -133,27 +128,24 @@ part:
     Chart pieChart = builder.build();
     renderChart(pieChart);
 
-In this case, the statically imported `renderChart` method will create
-the chart image and return it in its raw form i.e. as PNG bytes.
+`renderChart` will generate the chart image and return it as PNG bytes.
 
 #### Rendering the `Chart` instance in the view
 
-Assuming `chart()` as the action method calling `renderChart` above, the
-view could render the chart image using:
+Assuming that the code above belongs to an action method named
+`chart()`, the view can render the chart image via:
 
     <img src="{@chart()}" />
 
 Additional information
 ----------------------
 
-The examples above illustrate the idiom used for obtaining a `Chart`
-instance and rendering its image using Base64-encoded and raw forms.
+The examples herein illustrate the idiom to obtain a `Chart` instance
+and render its image using Base64-encoded and raw forms.
 
-`ChartBuilderFactory` is the entry point for chart creation. This
-factory provides methods for obtaining builders of all supported charts.
+`ChartBuilderFactory` is the entry point for chart generation. This
+factory provides methods for obtaining configurable builders of all
+supported chart types.
 
-Once a builder is obtained, different settings can be configured via its
-API.
-
-Additional information on all supported chart types and builder
+Additional information on supported chart types and builder
 configuration options can be found in the sample application.
